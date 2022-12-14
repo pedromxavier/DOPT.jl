@@ -12,9 +12,9 @@ function update_optimal!(;
     optimal_data = JSON.parsefile(optimal_path)::Dict
 
     for result::Dict in results_data
-        n = get(result, "n", nothing)::Int
-        i = get(result, "i", nothing)::Int
-        x = get(result, "x", nothing)::Vector{Int}
+        n = haskey(result, "n") ? result["n"]::Int          : error("missing 'n' entry (problem size)")
+        i = haskey(result, "i") ? result["i"]::Int          : error("missing 'i' entry (instance code)")
+        x = haskey(result, "i") ? Int.(result["x"]::Vector) : error("missing 'x' entry (solution vector)")
 
         A = read_instance(n, i, :A)::Matrix{Float64}
         z = objval(A, float(x))::Float64
