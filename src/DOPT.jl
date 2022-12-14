@@ -1,5 +1,6 @@
 module DOPT
 
+using CSV
 using MAT
 using JSON
 using LinearAlgebra

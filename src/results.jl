@@ -1,15 +1,16 @@
 function update_optimal!(;
     author::Union{String,Nothing} = nothing,
 )
-    results_path = joinpath(RESULTS_PATH, "results.json")
-    optimal_path = joinpath(RESULTS_PATH, "optimal.json")
+    results_json_path = joinpath(RESULTS_PATH, "results.json")
+    optimal_json_path = joinpath(RESULTS_PATH, "optimal.json")
+    optimal_csv_path  = joinpath(RESULTS_PATH, "optimal.csv")
 
-    if !isfile(results_path)
+    if !isfile(results_json_path)
         error("'results.json' file is missing!")
     end
 
-    results_data = JSON.parsefile(results_path)::Vector
-    optimal_data = JSON.parsefile(optimal_path)::Dict
+    results_data = JSON.parsefile(results_json_path)::Vector
+    optimal_data = JSON.parsefile(optimal_json_path)::Dict
 
     for result::Dict in results_data
         n = haskey(result, "n") ? result["n"]::Int          : error("missing 'n' entry (problem size)")
@@ -55,9 +56,26 @@ function update_optimal!(;
         end
     end
 
-    open(optimal_path, "w") do fp
+    # Write JSON
+    open(optimal_json_path, "w") do fp
         JSON.print(fp, optimal_data)
     end
+
+    csv_results = []
+
+    # Write CSV
+    for n̂ in keys(optimal_data)
+        n = parse(Int, n̂)
+        for î in keys(optimal_data[n̂])
+            i = parse(Int, î)
+            z = float(optimal_data[n̂][î]["z"])
+            author = something(optimal_data[n̂][î]["author"], missing)
+
+            push!(csv_results, (n, i, z, author))
+        end
+    end
+
+    CSV.write(optimal_csv_path, sort(csv_results), header = ["n", "i", "z", "author"])     
 
     return nothing
 end
