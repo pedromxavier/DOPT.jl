@@ -2,8 +2,9 @@ name: dopt-results
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
 
 jobs:
   update:
