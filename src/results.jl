@@ -16,10 +16,16 @@ function update_optimal!(;
         i = haskey(result, "i") ? result["i"]::Int          : error("missing 'i' entry (instance code)")
         x = haskey(result, "x") ? Int.(result["x"]::Vector) : error("missing 'x' entry (solution vector)")
 
+        if n ∉ INSTANCE_SIZES || i ∉ [1, 2, 3]
+            @warn "Invalid instance '($n, $i)', skipping"
+            continue
+        end
+
         A = read_instance(n, i, :A)::Matrix{Float64}
         z = objval(A, float(x))::Float64
 
         if !isfinite(z)
+            @warn "Unbounded objective value '$z', skipping"
             continue
         end
 
