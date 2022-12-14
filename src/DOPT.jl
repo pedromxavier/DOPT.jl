@@ -1,5 +1,6 @@
 module DOPT
 
+using MAT
 using JSON
 using LinearAlgebra
 using SparseArrays

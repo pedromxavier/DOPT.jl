@@ -14,7 +14,7 @@ function update_optimal!(;
     for result::Dict in results_data
         n = haskey(result, "n") ? result["n"]::Int          : error("missing 'n' entry (problem size)")
         i = haskey(result, "i") ? result["i"]::Int          : error("missing 'i' entry (instance code)")
-        x = haskey(result, "i") ? Int.(result["x"]::Vector) : error("missing 'x' entry (solution vector)")
+        x = haskey(result, "x") ? Int.(result["x"]::Vector) : error("missing 'x' entry (solution vector)")
 
         A = read_instance(n, i, :A)::Matrix{Float64}
         z = objval(A, float(x))::Float64
