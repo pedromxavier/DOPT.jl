@@ -1,0 +1,40 @@
+name: dopt-results
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  update:
+    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - julia-version: '1.8'
+            os: ubuntu-latest
+            arch: x64
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: Update Best Results
+        run: julia --proj ./scripts/update_results.jl ${{ github.actor }}
+      - name: Save Results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
+        run: >
+          git config --global user.name  "Pedro Maciel Xavier";
+          git config --global user.email "pedromxavier@poli.ufrj.br";
+          git add -f
+          ./benchmark/ToQUBO/tsp_ToQUBO.csv
+          ./benchmark/pyqubo/tsp_pyqubo.csv
+          ./benchmark/pyqubo_040/tsp_pyqubo_040.csv
+          ./benchmark/qubovert/tsp_qubovert.csv;
+          git commit -m "Save Benchmark Results [actions]";
+          git push;
