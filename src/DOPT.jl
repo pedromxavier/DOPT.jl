@@ -8,7 +8,7 @@ using SparseArrays
 
 export objval, read_instance
 
-# ~*~ Interface ~*~ #]
+# ~*~ Interface ~*~ #
 include("interface/interface.jl")
 include("interface/generic.jl")
 
