@@ -63,6 +63,11 @@ function find_walk(x::Vector{T}) where {T}
 end
 
 @doc raw"""
+    gap(z::T, z̄::T)
+
+Computes the relative gap between a solution ``z`` and the reference value ``\bar{z}``.
+
+Let
 ```math
 \begin{align*}
     z       &= \log\det A' \cdot diagm(x) \cdot A \\
@@ -70,24 +75,17 @@ end
 \end{align*}
 ```
 
+Then,
 ```math
 \begin{align*}
-    z - \bar{z} &= \log\det A' \cdot diagm(x) \cdot A - \log\det A' \cdot diagm(\bar{x}) \cdot A \\
-                &= \log\frac{\det A' \cdot diagm(x) \cdot A}{\det A' \cdot diagm(\bar{x}) \cdot A} \\
-                &= \log
-                \left[
-                    \det \left(A' \cdot diagm(x) \cdot A\right)
-                    \cdot
-                    \det \left(A' \cdot diagm(\bar{x}) \cdot A\right)^{-1}
-                \right] \\
-                &= \log\det
-                \left[
-                    \left(A' \cdot diagm(x) \cdot A\right) \cdot \left(A' \cdot diagm(\bar{x}) \cdot A\right)^{-1}
-                \right]
+    z - \bar{z}     &= \log\det A' \cdot diagm(x) \cdot A - \log\det A' \cdot diagm(\bar{x}) \cdot A \\
+                    &= \log\frac{\det A' \cdot diagm(x) \cdot A}{\det A' \cdot diagm(\bar{x}) \cdot A} \\[2ex]
+1 - e^{z - \bar{z}} &= \frac{\det A' \cdot diagm(\bar{x}) \cdot A - \det A' \cdot diagm(x) \cdot A}{\det A' \cdot diagm(\bar{x}) \cdot A} 
+    
 \end{align*}
 ```
 """ function gap end
 
 function gap(z::T, z̄::T) where {T}
-
+    return exp(z - z̄) - one
 end

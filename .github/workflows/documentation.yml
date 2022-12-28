@@ -13,6 +13,8 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: '1.6'
+      - name: Develop Project
+        run: julia --project=docs/ -e 'import Pkg; Pkg.develop(path=@__DIR__)'
       - uses: julia-actions/julia-buildpkg@latest
         with: 
             project: "docs/"
