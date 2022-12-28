@@ -1,15 +1,17 @@
 using DOPT
 
 function main(argv)
-    author = if length(argv) == 0
-        nothing
+    author = nothing
+
+    if length(argv) == 1
+        author = argv[1]
     else
-        argv[1]
+        error("This script accepts only one argument [author]")
     end
 
-    DOPT.update_optimal!(; author=author)
+    DOPT.update_solution!(; author=author)
 
-    return nothing
+    return 0
 end
 
 main(ARGS)

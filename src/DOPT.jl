@@ -5,16 +5,26 @@ using MAT
 using JSON
 using LinearAlgebra
 using SparseArrays
-using LoopVectorization
 
 export objval, read_instance
 
-const DATA_PATH      = joinpath(@__DIR__, "..", "data")
-const RESULTS_PATH   = joinpath(DATA_PATH, "results")
-const INSTANCES_PATH = joinpath(DATA_PATH, "instances")
-const INSTANCE_SIZES = [40, 60, 80, 100, 140, 180, 200, 240, 280, 300]
+# ~*~ Interface ~*~ #]
+include("interface/interface.jl")
+include("interface/generic.jl")
 
-include("lib.jl")
-include("results.jl")
+# ~*~ Library Includes ~*~ #
+include("lib/paths.jl")
+include("lib/tools.jl")
+include("lib/compress.jl")
+include("lib/objective.jl")
+include("lib/instances.jl")
+include("lib/results.jl")
+
+# ~*~ Solution Methods ~*~ #
+include("methods/ant_colony.jl")
+include("methods/local_search.jl")
+include("methods/iterated_local_search.jl")
+include("methods/simulated_annealing.jl")
+include("methods/path_relinking.jl")
 
 end # module DOPT

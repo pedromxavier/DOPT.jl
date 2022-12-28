@@ -1,8 +1,5 @@
-function objval(A::Matrix{T}, x::Vector{T}) where {T}
-    x, s = logabsdet(A' * spdiagm(x) * A)
-
-    return ifelse(s < zero(T), -Inf, x)
-end
+const INSTANCE_SIZES = [40, 60, 80, 100, 140, 180, 200, 240, 280, 300]
+const INSTANCE_CODES = [1, 2, 3]
 
 @doc raw"""
     read_instance(n::Integer, i::Integer)
@@ -22,17 +19,19 @@ julia> R = read_instance(200, 2, :R);
 ```
 """ function read_instance end
 
-function read_instance(filename::AbstractString, matrix_name::String)
-    path = joinpath(INSTANCES_PATH, "$(filename).mat")
+function read_instance(name::AbstractString, matrix_name::String)
+    path = instances_path("$(name).mat")
 
-    M = matopen(path) do fp
-        return read(fp, matrix_name)
+    A = matopen(path) do fp
+        read(fp, matrix_name)
     end
 
-    return M
+    return A
 end
 
 function read_instance(n::Integer, i::Integer, matrix_name::String)
+    @assert n ∈ INSTANCE_SIZES && i ∈ INSTANCE_CODES
+
     return read_instance("Instance_$(n)_$(i)", matrix_name)
 end
 
