@@ -11,3 +11,7 @@ end
 function results_path(path::String...)
     return data_path("results", path...)
 end
+
+function benchmark_path(path::String...)
+    return data_path("benchmark", path...)
+end
