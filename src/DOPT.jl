@@ -1,11 +1,13 @@
 module DOPT
 
 using CSV
-using MAT
 using JSON
-using Random
 using LinearAlgebra
+using MAT
+using Printf
+using Random
 using SparseArrays
+using Statistics
 
 export objval, read_instance
 
@@ -16,6 +18,7 @@ include("interface/generic.jl")
 # ~*~ Library Includes ~*~ #
 include("lib/paths.jl")
 include("lib/tools.jl")
+include("lib/report.jl")
 include("lib/compress.jl")
 include("lib/objective.jl")
 include("lib/instances.jl")
@@ -27,5 +30,8 @@ include("methods/local_search.jl")
 include("methods/iterated_local_search.jl")
 include("methods/simulated_annealing.jl")
 include("methods/path_relinking.jl")
+
+# ~*~ Running Utils ~*~ #
+include("run/run.jl")
 
 end # module DOPT
