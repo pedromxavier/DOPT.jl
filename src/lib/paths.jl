@@ -31,3 +31,7 @@ function series_path(
         joinpath(series_path(run_index; base_path = base_path), "$(n)_$(i).$(k).csv"),
     )
 end
+
+function benchmark_path(path::String...)
+    return data_path("benchmark", path...)
+end
