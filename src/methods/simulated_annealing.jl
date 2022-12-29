@@ -119,24 +119,17 @@ function solve(
     x̄::Vector{U},
     z̄::T,
     schedule::Vector{Float64};
-    max_iter::Integer                   = 1_000,
-    max_time::Union{Float64,Nothing}    = nothing,
-    max_subiter::Integer                = 1_000,
-    max_subtime::Union{Float64,Nothing} = nothing,
+    max_iter::Integer    = 1_000,
+    max_subiter::Integer = 1_000,
     params...,
 ) where {T,U}
-    x⃰, z⃰ = copy(x̄), z̄ # Best solution so far
-    x̂, ẑ = copy(x̄), z̄ # Accepted solution
-
-    X = objmatrix(A, x̂)
+    X = objmatrix(A, x̄)
     V = build_buffer(A)
-    r = Report{T}(x̄, z̄, max_iter)
+    r = Report{T,U}(max_iter)
 
-    start!(r)
+    x̂, ẑ = x⃰, z⃰ = add_solution!(r, x̄, z̄)
 
     for τ in schedule
-        init_subtime = time()
-
         for _ = 1:max_subiter
             i, j = find_walk(x̂)
 
@@ -164,41 +157,33 @@ function solve(
             end
 
             r.num_subiter += 1
-            run_subtime = time() - init_subtime
-
-            stop(run_subtime, max_subtime) && break
         end
 
         r.num_iter += 1
-        run_time = time() - r.init_time
-
-        stop(r.num_iter, max_iter, run_time, max_time) && break
     end
 
     return r
 end
 
 function print_header(
-    method::SimulatedAnnealing;
+    io::IO,
+    method::SimulatedAnnealing{S};
     max_iter,
-    max_time,
+    max_subiter,
     max_temp,
     min_temp,
     params...
-)
+) where {S}
     print(
+        io,
         """
-        * $(method_summary(method; params...))
-        * max_iter = $(max_iter)
-        * max_time = $(max_time)
-        * max_temp = $(max_temp)
-        * min_temp = $(min_temp)
+        * Simulated Annealing: $S
+        * max_iter    = $(max_iter)
+        * max_subiter = $(max_subiter)
+        * max_temp    = $(max_temp)
+        * min_temp    = $(min_temp)
         """
     )
 
     return nothing
-end
-
-function method_summary(::SimulatedAnnealing{S}; params...) where {S}
-    return "Simulated Annealing: $S"
 end

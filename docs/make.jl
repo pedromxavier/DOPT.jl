@@ -1,5 +1,6 @@
 using Documenter
 using DOPT
+using LinearAlgebra
 
 # Set up to run docstrings with jldoctest
 DocMeta.setdocmeta!(

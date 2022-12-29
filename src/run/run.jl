@@ -1,30 +1,43 @@
-function print_columns()
-    print("""
-          *-------*-----*---------*---------------*---------------*--------------*
-          |   n:i   |    N | z (ẑ) ± δz               | Δ            | t (t̂) ± δt | iter:subiter |
-          *-------*-----*---------*---------------*---------------*--------------*
-          """)
+function run(
+    method::MetaHeuristic = SimulatedAnnealing(),
+    path::Union{AbstractString,Nothing} = nothing;
+    max_iter::Integer = 1_000,
+    max_subiter::Integer = 1_000,
+    max_temp::Float64 = 100.0,
+    min_temp::Float64 = 1E-10,
+    params...,
+)
+
+    _run(
+        method,
+        path;
+        max_iter    = max_iter,
+        max_subiter = max_subiter,
+        max_temp    = max_temp,
+        min_temp    = min_temp,
+        params...,
+    )
+
+    return nothing
 end
 
-function run(
+function _run(
     n::Integer,
     i::Integer,
-    method::DOPT.MetaHeuristic = DOPT.AntColony();
+    method::MetaHeuristic = SimulatedAnnealing(),
+    path::Union{AbstractString,Nothing} = nothing;
     num_samples::Integer = 1,
     params...,
 )
     @assert num_samples > 0
 
-    z̄ = DOPT.read_solution(n, i)
-    A = DOPT.read_instance(n, i, :A)
-    R = DOPT.read_instance(n, i, :R)
-    s = n ÷ 2
+    _, z̄ = DOPT.read_solution(n, i)
+    A, R, s = DOPT.read_instance(n, i)
 
     z⃗ = []
     t⃗ = []
 
-    num_iter    = 0
-    num_subiter = 0
+    Δ = Inf
 
     for _ = 1:num_samples
         report = DOPT.solve(method, A, R, s; params...)::DOPT.Report
@@ -34,57 +47,58 @@ function run(
         x = report.x[end]
 
         if isnothing(z̄)
-            Δ = NaN
-            DOPT.update_solution!(n, i, x, z)
+            DOPT.update_solution!(n, i, x)
         else
-            Δ = DOPT.gap(z, z̄)
+            δ = DOPT.gap(z, z̄)
 
-            if Δ < 0
-                DOPT.update_solution!(n, i, x, z)
+            if δ < 0
+                DOPT.update_solution!(n, i, x)
+            end
+
+            if δ < Δ
+                Δ = δ
             end
         end
 
         push!(z⃗, z)
         push!(t⃗, t)
-
-        num_iter    += report.num_iter   
-        num_subiter += report.num_subiter
     end
 
     # Objective Value Statistics
-    z  = mean(z⃗)
-    ẑ  = median(z⃗)
+    z = mean(z⃗)
+    ẑ = median(z⃗)
     δz = std(z⃗)
+    zmin = minimum(z⃗)
+    zmax = maximum(z⃗)
 
     # Running Time Statistics
-    t  = mean(t⃗)
-    t̂  = median(t⃗)
+    t = mean(t⃗)
+    t̂ = median(t⃗)
     δt = std(t⃗)
+    tmin = minimum(t⃗)
+    tmax = maximum(t⃗)
 
-    @printf(
-        "| %3d:%1d | %3d  | %+7.3f (%+7.3f) ± %+7.3f | Δ ≈ %+8.2f%% | %12.2f | %10d:%10d |\n",
-        n, i,
-        num_samples,
-        z, ẑ, δz,
-        100.0Δ,
-        t, t̂, δt,
-        num_iter ÷ num_samples,
-        num_subiter ÷ num_samples,
-    )
+    print_line(n, i, num_samples, z, δz, Δ, t, δt)
+
+    save(path, z⃗, t⃗)
 
     return nothing
 end
 
-function run(method::DOPT.MetaHeuristic = DOPT.AntColony(); params...)
+function _run(method::DOPT.MetaHeuristic, path::Union{AbstractString,Nothing}; params...)
     print_header(method; params...)
 
     print_columns()
 
-    for n in N, i in I
-        run(n, i, method; params...)
+    for n in INSTANCE_SIZES, i in INSTANCE_CODES
+        _run(n, i, method, path; params...)
     end
 
-    println("*-------*-----*-----------*---------------*---------------*-----------*")
+    print_footer()
+
+    save(path, method; params...)
+
+    # Metadata
 
     # metadata = Dict{String,Any}(
     #     "max_subiter" => max_subiter,
@@ -96,6 +110,10 @@ function run(method::DOPT.MetaHeuristic = DOPT.AntColony(); params...)
     #     "datetime" => Dates.now(),
     #     "method" => method_summary(method; submethod = submethod),
     # )
+
+    # CSV
+
+
 
     # index = get_results_index()::Integer
     # path  = mkpath(data_path("results-$(index)"))
@@ -113,9 +131,3 @@ function run(method::DOPT.MetaHeuristic = DOPT.AntColony(); params...)
     return nothing
 end
 
-# function get_results_index()
-#     match_list = match.(r"^results-([0-9]+)$", readdir(DATA_PATH))
-#     index_list = getindex.(filter(!isnothing, match_list), 1)
-
-#     return maximum(filter(!isnothing, tryparse.(Int, index_list)); init = 0) + 1
-# end

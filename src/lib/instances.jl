@@ -38,10 +38,18 @@ end
 read_instance(n::Integer, i::Integer, key::Symbol) = read_instance(n, i, Val(key))
 read_instance(n::Integer, i::Integer, ::Val{:A})   = read_instance(n, i, "A")
 read_instance(n::Integer, i::Integer, ::Val{:R})   = trunc.(Int, vec(read_instance(n, i, "R")))
+read_instance(n::Integer, ::Integer, ::Val{:s})    = n ÷ 2
 
+@doc raw"""
+    read_instance(n:Integer, i:Integer)
+
+Retrieves ``A \in mathbb{R}^{m \times n}``, ``R \in \mathbb{Z}^{n}`` and ``s \in \mathbb{Z}``
+for a given instance `(n, i)`.
+"""
 function read_instance(n::Integer, i::Integer)
     A = read_instance(n, i, :A)
     R = read_instance(n, i, :R)
+    s = read_instance(n, i, :s)
 
-    return (A, R)
+    return (A, R, s)
 end

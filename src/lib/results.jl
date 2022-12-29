@@ -1,3 +1,12 @@
+@doc raw"""
+"""
+function get_author()
+    return get(ENV, "DOPT_AUTHOR", nothing)
+end
+
+@doc raw"""
+    read_solution(n::Integer, i::Integer)
+"""
 function read_solution(n::Integer, i::Integer)
     return read_solution(string(n), string(i))
 end
@@ -22,7 +31,7 @@ function update_solution!(
     i::String,
     x::Vector{U},
     z::T;
-    author::Union{String,Nothing} = nothing,
+    author::Union{String,Nothing} = get_author(),
 ) where {T,U<:Integer}
     path = results_path("solution.json")
     data = JSON.parsefile(path; use_mmap=false)
@@ -50,8 +59,9 @@ function update_solution!(
     n::Integer,
     i::Integer,
     x::Vector{U};
-    author::Union{String,Nothing} = nothing,
-) where {U<:Integer}
+    author::Union{String,Nothing} = get_author(),
+) where {U}
+    x = round.(Int, x)
     A = read_instance(n, i, :A)
     z = objval(A, x)
     _, z̄ = read_solution(n, i)
@@ -65,7 +75,7 @@ function update_solution!(
     end
 end
 
-function update_solution!(; author::Union{String,Nothing} = nothing)
+function update_solution!(; author::Union{String,Nothing} = get_author())
     if !isfile(results_path("results.json"))
         error("The 'results.json' file is missing")
     end

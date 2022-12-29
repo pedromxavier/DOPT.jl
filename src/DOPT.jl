@@ -33,5 +33,7 @@ include("methods/path_relinking.jl")
 
 # ~*~ Running Utils ~*~ #
 include("run/run.jl")
+include("run/print.jl")
+include("run/save.jl")
 
 end # module DOPT

@@ -15,5 +15,158 @@
             "x": "hGfo8h02",
             "z": -3.202785767491555
         }
+    },
+    "80": {
+        "1": {
+            "author": null,
+            "x": "d7YuVuLaxAkoB00",
+            "z": -2.7604300152238994
+        },
+        "2": {
+            "author": null,
+            "x": "3Kt2jSXnAsVk510",
+            "z": -2.433588579255061
+        },
+        "3": {
+            "author": null,
+            "x": "N3-NLiMeobdtg-0",
+            "z": -2.4380165890227903
+        }
+    },
+    "140": {
+        "1": {
+            "author": null,
+            "x": "eeoylwcY0JAUHuQNxqneEsf-0",
+            "z": -2.99668804659735
+        },
+        "2": {
+            "author": null,
+            "x": "zvXozsEqJgAFKEoHixQ2o+g+0",
+            "z": -3.038996965048302
+        },
+        "3": {
+            "author": null,
+            "x": "1f1Ffj3yuAFys-nN+VDLwv-+0",
+            "z": -1.522964013960797
+        }
+    },
+    "240": {
+        "1": {
+            "author": null,
+            "x": "dTOMIdZg7vqy90co1bOy0q076kENvLQsZRG2TrgD++",
+            "z": -0.5090500559519915
+        },
+        "2": {
+            "author": null,
+            "x": "bw9bO1HUhfHzxTdK6Mt4-niI2kQk3pr12KgPK-Do++",
+            "z": -0.49573107517474896
+        },
+        "3": {
+            "author": null,
+            "x": "j4Ht43GJg5InKgBh2qzuCm6jAMtb9RbhPl4CQE2E++",
+            "z": -0.7458420340970406
+        }
+    },
+    "300": {
+        "1": {
+            "author": null,
+            "x": "Pu-2NZ-YZx6xRJwhnPHIpPg04J8bz4Nm94E3Gqp15ph6zoVpER++",
+            "z": 4.312713752818017
+        },
+        "2": {
+            "author": null,
+            "x": "DhawkonNDJjpKmJNCuE2bx7PhEUKtU8NWia5iINRKI7Q2vesWK++",
+            "z": 3.456335883384642
+        },
+        "3": {
+            "author": null,
+            "x": "1+2jCOHcyAIDBbzoSJJaMb3RF83XQUZqkJyMxlpjwk-UGSEiwv++",
+            "z": 2.7937875403715546
+        }
+    },
+    "180": {
+        "1": {
+            "author": null,
+            "x": "UnmvVrHibMa3Ql+SS1zWQv6k7OLYnV++",
+            "z": -1.927962234360146
+        },
+        "2": {
+            "author": null,
+            "x": "3gJesqOubMoZ+5j25V5iQK-3ubUTRx++",
+            "z": -1.6329289651352907
+        },
+        "3": {
+            "author": null,
+            "x": "ky3rbAGQmhyIqC+i214KCNj3ZmwnmW++",
+            "z": -1.586871617539979
+        }
+    },
+    "280": {
+        "1": {
+            "author": null,
+            "x": "elddQyWrVqbFDGVrUjUQTL+-vzgYIUEgH6vbyYDE2Dt-ZDB2",
+            "z": 1.483831238214943
+        },
+        "2": {
+            "author": null,
+            "x": "iYE0sGgu3hk+b7ATahjse9-MWzcFtTcX7rC4mzthU995tD72",
+            "z": 1.071265268050189
+        },
+        "3": {
+            "author": null,
+            "x": "nMUZ3wSNydyrAEgDYffgBTXD1XV+j3xBOc+DesYooei2Wf82",
+            "z": 0.7973397344556901
+        }
+    },
+    "100": {
+        "1": {
+            "author": null,
+            "x": "8sODJCUHCkhYyvekA2",
+            "z": -2.422970243759019
+        },
+        "2": {
+            "author": null,
+            "x": "bcaVi6nsF89G3vivA2",
+            "z": -2.768441985886796
+        },
+        "3": {
+            "author": null,
+            "x": "j8CXbku19e7Cv05h22",
+            "z": -2.537438075407696
+        }
+    },
+    "200": {
+        "1": {
+            "author": null,
+            "x": "DvP7RaGUSGPsYEcg+xqnpS6XehDAirX+310",
+            "z": -1.95418275913881
+        },
+        "2": {
+            "author": null,
+            "x": "XsqDlKslBz5IEklr40LXCwd9uR9CWZU9M00",
+            "z": -1.2750516674926455
+        },
+        "3": {
+            "author": null,
+            "x": "eXwyUEphZ5BkTTKNompN6vlHJ2W4t6ErI10",
+            "z": -1.5206471465240585
+        }
+    },
+    "60": {
+        "1": {
+            "author": null,
+            "x": "F4HdKgfOhN++",
+            "z": -1.7745889457489787
+        },
+        "2": {
+            "author": null,
+            "x": "GQmZLh0Loa++",
+            "z": -2.274931294476889
+        },
+        "3": {
+            "author": null,
+            "x": "ZwbfIn5wY+++",
+            "z": -1.364487680256449
+        }
     }
 }

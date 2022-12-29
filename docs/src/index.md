@@ -1,11 +1,13 @@
 # DOPT - Determinant Optimality
 
-The D-OPT problem for a given matrix ``A \in \mathbb{R}^{m \times n}`` is stated as:
+The D-OPT problem for a given matrix ``A \in \mathbb{R}^{m \times n}`` and a positive
+integer ``s \le m`` is stated as:
 
 ```math
 \begin{array}{rl}
        \max & \log\det A' \cdot \text{diagm}(x) \cdot A \\
-\text{s.t.} & x \in \mathbb{B}^{m}
+\text{s.t.} & x \in \mathbb{B}^{m} \\
+            & \sum_{i} x_{i} = s
 \end{array}
 ```
 

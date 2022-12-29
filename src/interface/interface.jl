@@ -21,3 +21,16 @@ function solve end
     init(::MetaHeuristic, A::Matrix{T}, R::Matrix{T})
 """
 function init end
+
+@doc raw"""
+    run(method::MetaHeuristic; params...)    
+    run(path::AbstractString, method::MetaHeuristic; params...)
+
+Runs all problem instances with a given `method`, saving results to `path`.
+"""
+function run end
+
+@doc raw"""
+    save(path::AbstractString)
+"""
+function save end

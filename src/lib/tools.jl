@@ -85,10 +85,23 @@ Then, is is possible to compute the relative gap as
     
 \end{align*}
 ```
+
+!!! info
+    It is assumed that ``\det A' \cdot diagm(\bar{x}) \cdot A \ge 0``.
+    This computation comes from calling [`logabsdet`](@ref).
 """ function gap end
 
 function gap(z::T, z̄::T) where {T}
-    Δ = one(T) - exp(z - z̄)
-
-    return ifelse(z > z̄, -Δ, Δ)
+    return one(T) - exp(z - z̄)
 end
+
+#     d - d̄ 
+# Δ = -----
+#     ‖ d̄ ‖
+
+#     d - d̄ 
+# Δ = -----
+#       d̄ 
+
+# I. d < d̄
+# => 
