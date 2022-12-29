@@ -11,6 +11,20 @@ function read_solution(n::Integer, i::Integer)
     return read_solution(string(n), string(i))
 end
 
+function read_benchmark(n::Integer, i::Integer)
+    data = CSV.File(benchmark_path("benchmark_results.csv"))
+    
+    for row in data
+        if row.n == n && row.i == i
+            return row.Cont
+        end
+    end
+
+    data.close()
+
+    return nothing
+end
+
 function read_solution(n::String, i::String)
     data = JSON.parsefile(results_path("solution.json"); use_mmap=false)
 

@@ -15,3 +15,7 @@ end
 function run_path(index::Integer)
 
 end
+
+function benchmark_path(path::String...)
+    return data_path("benchmark", path...)
+end
