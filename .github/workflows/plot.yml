@@ -1,4 +1,4 @@
-name: dopt-results
+name: dopt-plot
 
 on:
   workflow_dispatch:

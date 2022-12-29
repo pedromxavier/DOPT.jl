@@ -7,27 +7,32 @@ function solve(
     method::MetaHeuristic,
     A::Matrix{T},
     R::Vector{K},
-    s::Integer;
+    s::Integer,
+    args...;
     params...,
 ) where {T,K<:Integer}
     x̄ = init(method, A, R, s)
 
-    return solve(method, A, x̄; params...)
+    return solve(method, A, x̄, args...; params...)
 end
 
-function solve(method::MetaHeuristic, A::Matrix{T}, s::Integer; params...) where {T}
+function solve(method::MetaHeuristic, A::Matrix{T}, s::Integer, args...; params...) where {T}
     x̄ = init(method, A, s)::Vector{T}
 
-    return solve(method, A, x̄; params...)
+    return solve(method, A, x̄, args...; params...)
 end
 
-function solve(method::MetaHeuristic, A::Matrix{T}, x̄::Vector{T}; params...) where {T}
+function solve(method::MetaHeuristic, A::Matrix{T}, x̄::Vector{T}, args...; params...) where {T}
     z̄ = objval(A, x̄)
 
-    return solve(method, A, x̄, z̄; params...)
+    return solve(method, A, x̄, z̄, args...; params...)
 end
 
 function init(::MetaHeuristic, A::Matrix{T}, R::Vector{K}, s::Integer) where {T,K<:Integer}
+    return init(A, R, s)
+end
+
+function init(A::Matrix{T}, R::Vector{K}, s::Integer) where {T,K<:Integer}
     m, n = size(A)
     U,   = svd(A; full = true)
 
@@ -41,12 +46,14 @@ function init(::MetaHeuristic, A::Matrix{T}, R::Vector{K}, s::Integer) where {T,
 
     x[ϕ] .= 1.0
 
-    @assert sum(round.(Int, x)) == s
-
     return x
 end
 
 function init(::MetaHeuristic, A::Matrix{T}, s::Integer) where {T}
+    return init(A, s)
+end
+
+function init(A::Matrix{T}, s::Integer) where {T}
     m = size(A, 1)
 
     return shuffle!(ifelse.(1:m .<= s, one(T), zero(T)))

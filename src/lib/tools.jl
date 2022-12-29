@@ -67,6 +67,7 @@ end
 
 Computes the relative gap between a solution ``z`` and the reference value ``\bar{z}``.
 
+## Rationale
 Let
 ```math
 \begin{align*}
@@ -75,7 +76,7 @@ Let
 \end{align*}
 ```
 
-Then,
+Then, is is possible to compute the relative gap as
 ```math
 \begin{align*}
     z - \bar{z}     &= \log\det A' \cdot diagm(x) \cdot A - \log\det A' \cdot diagm(\bar{x}) \cdot A \\
@@ -87,5 +88,7 @@ Then,
 """ function gap end
 
 function gap(z::T, z̄::T) where {T}
-    return exp(z - z̄) - one
+    Δ = one(T) - exp(z - z̄)
+
+    return ifelse(z > z̄, -Δ, Δ)
 end
