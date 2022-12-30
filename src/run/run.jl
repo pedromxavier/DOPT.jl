@@ -63,28 +63,24 @@ function _run!(job::Job, n::Integer, i::Integer)
 
     # Objective Value Statistics
     z = mean(z⃗)
-    ẑ = median(z⃗)
     δz = std(z⃗)
-    zmin = minimum(z⃗)
-    zmax = maximum(z⃗)
 
     # Running Time Statistics
     t = mean(t⃗)
-    t̂ = median(t⃗)
     δt = std(t⃗)
-    tmin = minimum(t⃗)
-    tmax = maximum(t⃗)
 
     print_line(n, i, job.num_samples, z, δz, Δ, t, δt)
 
     # Save Results
-    # save!(job, n, i, z⃗, t⃗)
+    save!(job, n, i, Float64.(z⃗), Δ, Float64.(t⃗))
 
     return nothing
 end
 
 function _run!(job::Job)
     print_header(job.method; job.params...)
+
+    save!(job)
 
     print_columns()
 
@@ -93,38 +89,6 @@ function _run!(job::Job)
     end
 
     print_footer()
-
-    # save(path, method; params...)
-
-    # Metadata
-
-    # metadata = Dict{String,Any}(
-    #     "max_subiter" => max_subiter,
-    #     "num_swaps" => num_swaps,
-    #     "num_ants" => num_ants,
-    #     "max_iter" => max_iter,
-    #     "max_time" => max_time,
-    #     "nthreads" => nthreads,
-    #     "datetime" => Dates.now(),
-    #     "method" => method_summary(method; submethod = submethod),
-    # )
-
-    # CSV
-
-
-
-    # index = get_results_index()::Integer
-    # path  = mkpath(data_path("results-$(index)"))
-
-    # metadata_path = joinpath(path, "metadata.json")
-    # results_path  = joinpath(path, "results.csv")
-
-    # let fp = open(metadata_path, "w")
-    #     JSON.print(fp, metadata)
-    #     close(fp)
-    # end
-
-    # CSV.write(results_path, results, header = ["n", "i", "z", "t"])
 
     return nothing
 end

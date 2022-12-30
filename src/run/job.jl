@@ -20,13 +20,7 @@ mutable struct Job
             index = get_next_job_index(path)
         end
 
-        job = new(
-            method,
-            params,
-            path,
-            index,
-            num_samples
-        )
+        job = new(method, params, path, index, num_samples)
 
         mkpath(job_path(job))
 
@@ -50,4 +44,12 @@ end
 
 function series_path(job::Job, n::Integer, i::Integer, k::Integer)
     return abspath(joinpath(series_path(job), "$(n)_$(i).$(k).csv"))
+end
+
+function metadata_path(job::Job)
+    return abspath(joinpath(job_path(job), "metadata.json"))
+end
+
+function results_path(job::Job)
+    return abspath(joinpath(job_path(job), "results.csv"))
 end
