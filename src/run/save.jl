@@ -66,7 +66,7 @@ function save!(job::Job)
     merge!(metadata, job.params)
 
     open(path, "w") do fp
-        JSON.print(fp, metadata)
+        JSON.print(fp, metadata, 4)
     end
 
     path = results_path(job)

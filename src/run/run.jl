@@ -2,14 +2,17 @@ function run(
     method::MetaHeuristic = SimulatedAnnealing(),
     path::Union{AbstractString,Nothing} = nothing;
     max_iter::Integer = 1_000,
+    nthreads::Integer = Threads.nthreads(),
+    max_time::Float64 = 1.0,
     max_subiter::Integer = 1_000,
     max_temp::Float64 = 100.0,
     min_temp::Float64 = 1E-10,
     num_samples::Integer = 3,
     params...,
 )
-
     job_params = Dict{Symbol,Any}(
+        :nthreads    => nthreads,
+        :max_time    => max_time,
         :max_iter    => max_iter,
         :max_subiter => max_subiter,
         :max_temp    => max_temp,

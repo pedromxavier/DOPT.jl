@@ -1,8 +1,22 @@
 abstract type StopCriteria end
 
 struct FirstImprovement <: StopCriteria end
+
+function Base.show(io::IO, ::FirstImprovement)
+    print(io, "First Improvement")
+end
+
 struct FirstImprovementPlus <: StopCriteria end
+
+function Base.show(io::IO, ::FirstImprovementPlus)
+    print(io, "First Improvement Plus")
+end
+
 struct BestImprovement <: StopCriteria end
+
+function Base.show(io::IO, ::BestImprovement)
+    print(io, "Best Improvement")
+end
 
 struct LocalSearch{C<:StopCriteria} <: MetaHeuristic end
 
@@ -236,4 +250,8 @@ function solve(
     end
 
     return (x⃰, z⃰, num_iter)
+end
+
+function Base.show(io::IO, ::LocalSearch{C}) where {C}
+    print(io, "Local Search: $(C())")
 end

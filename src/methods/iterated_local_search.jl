@@ -2,7 +2,9 @@
 
 Iterated Local Search
 """
-struct IteratedLocalSearch <: MetaHeuristic end
+struct IteratedLocalSearch{LS<:LocalSearch} <: MetaHeuristic end
+
+IteratedLocalSearch() = IteratedLocalSearch{LocalSearch{FirstImprovement}}()
 
 """
     solve(::IteratedLocalSearch, A::Matrix{T}, x̄::Vector{T}, z̄::T) where {T}
@@ -10,9 +12,9 @@ struct IteratedLocalSearch <: MetaHeuristic end
 Performs an Iterated Local Search (IteratedLocalSearch) starting with `x`.
 """
 function solve(
-    ::IteratedLocalSearch,
+    ::IteratedLocalSearch{LS},
     A::Matrix{T},
-    x̄::Vector{T},
+    x̄::Vector{U},
     z̄::T;
     nthreads::Integer                   = 1,
     num_swaps::Integer                  = 3,
@@ -21,78 +23,59 @@ function solve(
     max_time::Union{Float64,Nothing}    = nothing,
     max_subiter::Union{Integer,Nothing} = nothing,
     max_subtime::Union{Float64,Nothing} = nothing,
-    submethod::LocalSearch              = LocalSearchFI(),
-    params...
-) where {T}
+    params...,
+) where {T,U,LS<:LocalSearch}
     V = build_buffer(A)
+    r = Report{T,U}(max_iter)
 
-    # Thread-wise data
-    R = [Report{T}(x̄, z̄, max_iter) for _ = 1:nthreads]
+    x̂, ẑ = x⃰, z⃰ = add_solution!(r, x̄, z̄)
 
-    Threads.@threads for i = 1:nthreads
-        r = R[i]
+    while !stop(r.num_iter, max_iter, time(r), max_time)
+        x = shake(x̂, num_swaps)
+        z = objval(A, x)
 
-        run_time  = 0.0
+        x, z, ns = solve(LS(), A, V, x, z; max_iter = max_subiter, max_time = max_subtime)
 
-        start!(r)
+        Δ = z - ẑ
 
-        x⃰, z⃰ = r.x, r.z[end] # 
-        x̂, ẑ = x⃰, z⃰                # Accepted Solution
+        if Δ >= zero(T)
+            x̂, ẑ = x, z # Accept
 
-        while !stop(r.num_iter, max_iter, run_time, max_time)
-            x = shake(x̂, num_swaps)
-            z = objval(A, x)
-
-            x, z, ns = solve(
-                submethod,
-                A, V, x, z;
-                max_iter=max_subiter,
-                max_time=max_subtime,
-            )
-
-            Δ = z - ẑ
-
-            if Δ >= zero(T)
-                x̂, ẑ = x, z # Accept
-
-                if ẑ > z⃰
-                    x⃰, z⃰ = add_solution!(r, x̂, ẑ)
-                end
-            elseif rand() < exp(Δ / max_temp)
-                x̂, ẑ = x, z # Accept
+            if ẑ > z⃰
+                x⃰, z⃰ = add_solution!(r, x̂, ẑ)
             end
-
-            r.num_subiter += ns
-            r.num_iter    += 1
-            run_time = time() - r.init_time
+        elseif rand() < exp(Δ / max_temp)
+            x̂, ẑ = x, z # Accept
         end
+
+        r.num_iter    += 1
+        r.num_subiter += ns
     end
 
-    i = argmax([r.z[end] for r in R])
-
-    return R[i]
+    return r
 end
 
-function print_header(method::DOPT.IteratedLocalSearch; max_iter, max_time, max_temp, nthreads, params...)
-    print(
-        """
-        * $(method_summary(method; params...))
-        * max_iter = $(max_iter)
-        * max_time = $(max_time)
-        * max_temp = $(max_temp)
-        * nthreads = $(nthreads)
-        """
-    )
+function print_header(
+    method::IteratedLocalSearch;
+    max_iter,
+    max_time,
+    max_temp,
+    nthreads,
+    params...,
+)
+    print("""
+          * $(method)
+          * max_iter = $(max_iter)
+          * max_time = $(max_time)
+          * max_temp = $(max_temp)
+          * nthreads = $(nthreads)
+          """)
+
+    return nothing
 end
 
-function method_summary(::DOPT.IteratedLocalSearch; submethod::DOPT.LocalSearch, params...)
-    if submethod isa DOPT.LocalSearchFI
-        return "Iterated Local Search: First Improvement"
-    elseif submethod isa DOPT.LocalSearchFIP
-        return "Iterated Local Search: First Improvement+"
-    elseif submethod isa DOPT.LocalSearchFIP
-        return "Iterated Local Search: Best Improvement"
-    else
-        return "Iterated Local Search: ?"
-    end
+function Base.show(io::IO, ::IteratedLocalSearch{S}) where {S<:LocalSearch}
+    print(io, "Iterated Local Search: $(S())")
 end
+
+const ILS = IteratedLocalSearch
