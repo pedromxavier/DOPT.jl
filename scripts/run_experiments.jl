@@ -1,6 +1,8 @@
 using DOPT
 
 function run_minimal()
+    println("Running Minimal Example")
+
     # For TTT-Plots
     t = @timed begin
         let num_samples = 3, sizes = 40, codes = 1
