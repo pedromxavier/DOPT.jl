@@ -85,11 +85,3 @@ function save!(job::Job)
 
     return nothing
 end
-
-
-function get_next_job_index(path::AbstractString)
-    match_list = match.(r"^job-([0-9]+)$", readdir(path))
-    index_list = getindex.(filter(!isnothing, match_list), 1)
-
-    return maximum(filter(!isnothing, tryparse.(Int, index_list)); init = 0) + 1
-end

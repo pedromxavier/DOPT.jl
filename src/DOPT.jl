@@ -10,6 +10,7 @@ using Printf
 using Random
 using SparseArrays
 using Statistics
+using UUIDs
 
 export objval, read_instance
 

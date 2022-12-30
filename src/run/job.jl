@@ -2,7 +2,7 @@ mutable struct Job
     method::MetaHeuristic
     params::Dict{Symbol,Any}
     path::String
-    index::Integer
+    index::UUID
     num_samples::Integer
     sizes::Vector{Int}
     codes::Vector{Int}
@@ -10,8 +10,7 @@ mutable struct Job
     function Job(
         method,
         params::Dict{Symbol,Any},
-        path::Union{AbstractString,Nothing} = nothing,
-        index::Union{Integer,Nothing} = nothing;
+        path::Union{AbstractString,Nothing} = nothing;
         num_samples::Integer = 1,
         sizes::Vector = INSTANCE_SIZES,
         codes::Vector = INSTANCE_CODES,
@@ -20,9 +19,7 @@ mutable struct Job
             path = results_path()
         end
 
-        if isnothing(index)
-            index = get_next_job_index(path)
-        end
+        index = uuid4()
 
         job = new(method, params, path, index, num_samples, sizes, codes)
 
