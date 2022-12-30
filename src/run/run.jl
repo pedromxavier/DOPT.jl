@@ -1,8 +1,8 @@
 function run(
     method::MetaHeuristic = SimulatedAnnealing();
     path::Union{AbstractString,Nothing} = nothing,
-    sizes::Union{Integer,Vector{Integer},Nothing} = nothing,
-    codes::Union{Integer,Vector{Integer},Nothing} = nothing,
+    sizes::Union{Integer,Vector,Nothing} = nothing,
+    codes::Union{Integer,Vector,Nothing} = nothing,
     max_iter::Integer = 1_000,
     nthreads::Integer = Threads.nthreads(),
     max_time::Float64 = 1.0,
