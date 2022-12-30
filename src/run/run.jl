@@ -55,7 +55,7 @@ function _run!(job::Job, n::Integer, i::Integer)
         end
 
         # Save Series
-        # save!(job, n, i, k, report.z, report.t)
+        save!(job, n, i, k, report.z, report.t)
 
         push!(z⃗, z)
         push!(t⃗, t)
