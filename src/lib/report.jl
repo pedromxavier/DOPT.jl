@@ -35,6 +35,10 @@ function add_solution!(r::Report{T}, x::Vector{U}, z::T) where {T,U}
     return (x, z)
 end
 
+function Base.length(r::Report)
+    return length(r.t)
+end
+
 function Libc.time(r::Report)
     if isnothing(r.init_time)
         return NaN

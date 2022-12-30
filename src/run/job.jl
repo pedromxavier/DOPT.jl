@@ -2,25 +2,26 @@ mutable struct Job
     method::MetaHeuristic
     params::Dict{Symbol,Any}
     path::String
-    index::Integer
+    index::UUID
     num_samples::Integer
+    sizes::Vector{Int}
+    codes::Vector{Int}
 
     function Job(
         method,
         params::Dict{Symbol,Any},
-        path::Union{AbstractString,Nothing} = nothing,
-        index::Union{Integer,Nothing} = nothing;
+        path::Union{AbstractString,Nothing} = nothing;
         num_samples::Integer = 1,
+        sizes::Vector = INSTANCE_SIZES,
+        codes::Vector = INSTANCE_CODES,
     )
         if isnothing(path)
             path = results_path()
         end
 
-        if isnothing(index)
-            index = get_next_job_index(path)
-        end
+        index = uuid4()
 
-        job = new(method, params, path, index, num_samples)
+        job = new(method, params, path, index, num_samples, sizes, codes)
 
         mkpath(job_path(job))
 
@@ -52,4 +53,13 @@ end
 
 function results_path(job::Job)
     return abspath(joinpath(job_path(job), "results.csv"))
+end
+
+@doc raw"""
+""" function create_job end
+
+function create_job(path::AbstractString)
+    data = TOML.parsefile(path)
+
+    data
 end

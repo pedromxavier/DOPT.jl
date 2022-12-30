@@ -20,6 +20,7 @@ makedocs(;
     authors="Pedro Xavier and Thiago Henrique Coelho",
     pages=[
         "Home" => "index.md",
+        "API"  => "api.md",
         # "manual.md",
         # "examples.md",
         # "Booklet" => "booklet.md"

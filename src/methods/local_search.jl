@@ -18,12 +18,14 @@ function Base.show(io::IO, ::BestImprovement)
     print(io, "Best Improvement")
 end
 
-struct LocalSearch{C<:StopCriteria} <: MetaHeuristic end
+abstract type LocalSearch{C<:StopCriteria} <: MetaHeuristic end
 
-LocalSearch() = LocalSearch{FirstImprovement}()
+struct DeterministicLocalSearch{C} <: LocalSearch{C} end
+
+DeterministicLocalSearch() = DeterministicLocalSearch{FirstImprovement}()
 
 function solve(
-    ::LocalSearch{FirstImprovement},
+    ::DeterministicLocalSearch{FirstImprovement},
     A::Matrix{T},
     V::Array{T,3},
     x̄::Vector{U},
@@ -43,9 +45,7 @@ function solve(
     while !stop(num_iter, max_iter, run_time, max_time)
         flag = false
 
-        for i = 1:n, j = 1:n
-            i == j && continue
-
+        for i = 1:n, j = (i+1):n
             if iszero(x⃰[i]) ⊻ iszero(x⃰[j])
                 if iszero(x⃰[i])
                     i, j = j, i
@@ -75,7 +75,7 @@ function solve(
 end
 
 function solve(
-    ::LocalSearch{FirstImprovement},
+    ::DeterministicLocalSearch{FirstImprovement},
     A::Matrix{T},
     x̄::Vector{T},
     z̄::T;
@@ -130,7 +130,7 @@ function solve(
 end
 
 function solve(
-    ::LocalSearch{FirstImprovementPlus},
+    ::DeterministicLocalSearch{FirstImprovementPlus},
     A::Matrix{T},
     x̄::Vector{T},
     z̄::T;
@@ -191,7 +191,7 @@ function solve(
 end
 
 function solve(
-    ::LocalSearch{BestImprovement},
+    ::DeterministicLocalSearch{BestImprovement},
     A::Matrix{T},
     x̄::Vector{T},
     z̄::T;
@@ -252,6 +252,67 @@ function solve(
     return (x⃰, z⃰, num_iter)
 end
 
-function Base.show(io::IO, ::LocalSearch{C}) where {C}
-    print(io, "Local Search: $(C())")
+function Base.show(io::IO, ::DeterministicLocalSearch{C}) where {C}
+    print(io, "Deterministic Local Search: $(C())")
+end
+
+struct RandomLocalSearch{C} <: LocalSearch{C} end
+
+function Base.show(io::IO, ::RandomLocalSearch{C}) where {C}
+    print(io, "Random Local Search: $(C())")
+end
+
+function solve(
+    ::RandomLocalSearch{FirstImprovement},
+    A::Matrix{T},
+    V::Array{T,3},
+    x̄::Vector{U},
+    z̄::T;
+    max_iter::Union{Integer,Nothing} = nothing,
+    max_subiter::Integer = 1_000,
+    max_time::Union{Float64,Nothing} = nothing,
+    params...,
+) where {T,U}
+    n    = length(x̄)
+    x⃰, z⃰ = copy(x̄), z̄
+    X    = objmatrix(A, x̄)
+
+    num_iter  = 0
+    run_time  = 0.0
+    init_time = time()
+
+    while !stop(num_iter, max_iter, run_time, max_time)
+        flag = false
+
+        for _ = 1:max_subiter
+            i = rand(1:n)
+            
+            while (j = rand(1:n)) == i end
+
+            if iszero(x⃰[i]) ⊻ iszero(x⃰[j])
+                if iszero(x⃰[i])
+                    i, j = j, i
+                end
+
+                swap!(X, V, i, j)
+
+                z = objval(X)
+
+                if z > z⃰ # Improvement
+                    swap!(x⃰, i, j)
+                    flag = true
+                    z⃰ = z
+                    break
+                else
+                    swap!(X, V, j, i)
+                end
+            end
+        end
+
+        num_iter += 1
+        run_time = time() - init_time
+        flag || break
+    end
+
+    return (x⃰, z⃰, num_iter)
 end

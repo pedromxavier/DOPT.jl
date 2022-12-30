@@ -4,7 +4,7 @@ Iterated Local Search
 """
 struct IteratedLocalSearch{LS<:LocalSearch} <: MetaHeuristic end
 
-IteratedLocalSearch() = IteratedLocalSearch{LocalSearch{FirstImprovement}}()
+IteratedLocalSearch() = IteratedLocalSearch{DeterministicLocalSearch{FirstImprovement}}()
 
 """
     solve(::IteratedLocalSearch, A::Matrix{T}, x̄::Vector{T}, z̄::T) where {T}
@@ -58,17 +58,17 @@ end
 function print_header(
     method::IteratedLocalSearch;
     max_iter,
+    max_subiter,
     max_time,
-    max_temp,
     nthreads,
     params...,
 )
     print("""
           * $(method)
-          * max_iter = $(max_iter)
-          * max_time = $(max_time)
-          * max_temp = $(max_temp)
-          * nthreads = $(nthreads)
+          * max_iter    = $(max_iter)
+          * max_subiter = $(max_subiter)
+          * max_time    = $(max_time)
+          * nthreads    = $(nthreads)
           """)
 
     return nothing

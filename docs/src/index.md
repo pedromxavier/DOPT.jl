@@ -1,42 +1,27 @@
 # DOPT - Determinant Optimality
 
-The D-OPT problem for a given matrix ``A \in \mathbb{R}^{m \times n}`` and a positive
+The binary D-OPT problem for a given matrix ``A \in \mathbb{R}^{m \times n}`` and a positive
 integer ``s \le m`` is stated as:
 
 ```math
 \begin{array}{rl}
-       \max & \log\det A' \cdot \text{diagm}(x) \cdot A \\
-\text{s.t.} & x \in \mathbb{B}^{m} \\
-            & \sum_{i} x_{i} = s
+       \max & \log\det A' \cdot \text{diagm}(\mathbf{x}) \cdot A \\
+\text{s.t.} & \sum_{i} \mathbf{x}_{i} = s \\
+            & \mathbf{x} \in \mathbb{B}^{m}
 \end{array}
 ```
 
-## API
+## Some insights
 
-### Solution Methods
+### Neighborhood
 
-```@docs
-DOPT.MetaHeuristic
-DOPT.AntColony
-DOPT.SimulatedAnnealing
-DOPT.LocalSearch
-DOPT.IteratedLocalSearch
-DOPT.PathRelinking
+### Objective value
+
+One could write ``f(\mathbf{x}) = \log\det A' \cdot \text{diagm}(\mathbf{x}) \cdot A`` as
+
+```math
+\log\det \sum_{i = 1}^{m} \mathbf{x}_{i} \mathbf{a}_{i} \mathbf{a}_{i}'
 ```
 
-```@docs
-DOPT.init
-DOPT.solve
-```
-
-### Metrics
-```@docs
-DOPT.gap
-```
-
-### Instances & Results
-```@docs
-DOPT.read_instance
-DOPT.read_solution
-DOPT.update_solution!
-```
+where ``\mathbf{a}_{i}`` is the ``i``-th row of ``A``.
+This allows one to pre-compute the "objective matrix" ``X = \sum_{i = 1}^{m} \mathbf{x}_{i} \mathbf{a}_{i} \mathbf{a}_{i}`` to speed up the evaluation of the objective function after walking to a neighbor state.
