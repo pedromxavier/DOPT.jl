@@ -1,26 +1,3 @@
-mutable struct Job
-    path::String
-    run_index::Integer
-    run_path::String
-    series_path::String
-    series_fp::IO
-    results_path::String
-    results_fp::IO
-    metadata_path::String
-
-    function Job(
-        path::AbstractString = results_path(),
-        run_index::Integer = get_next_run_index(path)
-    )
-
-        return new(
-            path,
-            run_index,
-            run_path,
-        )
-    end
-end
-
 function save(
     path::AbstractString,
     run_index::Integer,
@@ -30,9 +7,6 @@ function save(
     z⃗::Vector{T},
     t⃗::Vector{Float64},
 ) where {T}
-    file_path = series_path(run_index, n, i, k; base_path=path)
-
-    open(file_path, "a") do fp
 
 end
 

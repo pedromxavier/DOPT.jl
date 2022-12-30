@@ -12,17 +12,18 @@ function read_solution(n::Integer, i::Integer)
 end
 
 function read_benchmark(n::Integer, i::Integer)
-    data = CSV.File(benchmark_path("benchmark_results.csv"))
-    
-    for row in data
+    df = CSV.read(benchmark_path("benchmark_results.csv"), DataFrame)
+
+    z = nothing
+
+    for row in eachrow(df)
         if row.n == n && row.i == i
-            return row.Cont
+            z = row.LS
+            break
         end
     end
 
-    data.close()
-
-    return nothing
+    return z
 end
 
 function read_solution(n::String, i::String)

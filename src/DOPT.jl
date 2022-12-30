@@ -1,6 +1,7 @@
 module DOPT
 
 using CSV
+using DataFrames
 using JSON
 using LinearAlgebra
 using MAT
@@ -32,6 +33,7 @@ include("methods/simulated_annealing.jl")
 include("methods/path_relinking.jl")
 
 # ~*~ Running Utils ~*~ #
+include("run/job.jl")
 include("run/run.jl")
 include("run/print.jl")
 include("run/save.jl")

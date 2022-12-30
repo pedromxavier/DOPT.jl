@@ -5,33 +5,27 @@ function run(
     max_subiter::Integer = 1_000,
     max_temp::Float64 = 100.0,
     min_temp::Float64 = 1E-10,
+    num_samples::Integer = 3,
     params...,
 )
 
-    _run(
-        method,
-        path;
-        max_iter    = max_iter,
-        max_subiter = max_subiter,
-        max_temp    = max_temp,
-        min_temp    = min_temp,
+    job_params = Dict{Symbol,Any}(
+        :max_iter    => max_iter,
+        :max_subiter => max_subiter,
+        :max_temp    => max_temp,
+        :min_temp    => min_temp,
         params...,
     )
+
+    job = Job(method, job_params, path; num_samples = num_samples)
+
+    _run!(job)
 
     return nothing
 end
 
-function _run(
-    n::Integer,
-    i::Integer,
-    method::MetaHeuristic = SimulatedAnnealing(),
-    path::Union{AbstractString,Nothing} = nothing;
-    num_samples::Integer = 1,
-    params...,
-)
-    @assert num_samples > 0
-
-    _, z̄ = DOPT.read_solution(n, i)
+function _run!(job::Job, n::Integer, i::Integer)
+    z̄       = DOPT.read_benchmark(n, i)
     A, R, s = DOPT.read_instance(n, i)
 
     z⃗ = []
@@ -39,8 +33,8 @@ function _run(
 
     Δ = Inf
 
-    for _ = 1:num_samples
-        report = DOPT.solve(method, A, R, s; params...)::DOPT.Report
+    for k = 1:job.num_samples
+        report = DOPT.solve(job.method, A, R, s; job.params...)::DOPT.Report
 
         t = report.t[end]
         z = report.z[end]
@@ -60,6 +54,9 @@ function _run(
             end
         end
 
+        # Save Series
+        # save!(job, n, i, k, report.z, report.t)
+
         push!(z⃗, z)
         push!(t⃗, t)
     end
@@ -78,25 +75,26 @@ function _run(
     tmin = minimum(t⃗)
     tmax = maximum(t⃗)
 
-    print_line(n, i, num_samples, z, δz, Δ, t, δt)
+    print_line(n, i, job.num_samples, z, δz, Δ, t, δt)
 
-    save(path, z⃗, t⃗)
+    # Save Results
+    # save!(job, n, i, z⃗, t⃗)
 
     return nothing
 end
 
-function _run(method::DOPT.MetaHeuristic, path::Union{AbstractString,Nothing}; params...)
-    print_header(method; params...)
+function _run!(job::Job)
+    print_header(job.method; job.params...)
 
     print_columns()
 
     for n in INSTANCE_SIZES, i in INSTANCE_CODES
-        _run(n, i, method, path; params...)
+        _run!(job, n, i)
     end
 
     print_footer()
 
-    save(path, method; params...)
+    # save(path, method; params...)
 
     # Metadata
 

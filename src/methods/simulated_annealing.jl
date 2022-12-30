@@ -166,7 +166,6 @@ function solve(
 end
 
 function print_header(
-    io::IO,
     method::SimulatedAnnealing{S};
     max_iter,
     max_subiter,
@@ -175,7 +174,6 @@ function print_header(
     params...
 ) where {S}
     print(
-        io,
         """
         * Simulated Annealing: $S
         * max_iter    = $(max_iter)
