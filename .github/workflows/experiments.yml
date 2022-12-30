@@ -28,16 +28,15 @@ jobs:
         run: |
           git config --global user.name  "GitHub Action"
           git config --global user.email "action@github.com"
-          git checkout results || git checkout -b results
-          git merge origin/main
       - name: Run Jobs
         run: julia --proj ./scripts/run_experiments.jl
         env:
           DOPT_AUTHOR: ${{ github.actor }}
       - name: Save Results
         run: |
+          git checkout results || git checkout -b results
           git add -f ./data/results/job-*
           git commit -m "Update Results [actions]"
-          git push origin results
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
