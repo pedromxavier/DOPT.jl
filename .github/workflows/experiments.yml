@@ -2,9 +2,12 @@ name: dopt-experiments
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   update:
+    if: ${{ contains(github.event.head_commit.message, "[run]") }}
     name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -27,7 +30,7 @@ jobs:
           git config --global user.email "action@github.com"
           git checkout results || git checkout -b results
           git merge origin/main
-      - name: Update Results
+      - name: Run Jobs
         run: julia --proj ./scripts/run_experiments.jl
         env:
           DOPT_AUTHOR: ${{ github.actor }}
@@ -35,7 +38,6 @@ jobs:
         run: |
           git add -f ./data/results/job-*
           git commit -m "Update Results [actions]"
-          git rebase origin/results
           git push origin results
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
