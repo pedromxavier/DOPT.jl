@@ -54,3 +54,12 @@ end
 function results_path(job::Job)
     return abspath(joinpath(job_path(job), "results.csv"))
 end
+
+@doc raw"""
+""" function create_job end
+
+function create_job(path::AbstractString)
+    data = TOML.parsefile(path)
+
+    data
+end
