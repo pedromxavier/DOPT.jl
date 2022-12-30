@@ -1,0 +1,16 @@
+{
+    "num_samples": 3,
+    "max_time": 1.0,
+    "min_temp": 1.0e-10,
+    "nthreads": 1,
+    "timestamp": "2022-12-30T02:34:26.549",
+    "method": "DOPT.SimulatedAnnealing{Geometric Schedule}()",
+    "max_temp": 100.0,
+    "max_iter": 100,
+    "cpu_info": [
+        "Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz : 2593MHz",
+        "Intel(R) Xeon(R) Platinum 8272CL CPU @ 2.60GHz : 2593MHz"
+    ],
+    "author": "pedromxavier",
+    "max_subiter": 100
+}
