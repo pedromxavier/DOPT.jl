@@ -35,6 +35,7 @@ jobs:
         run: |
           git add -f ./data/results/job-*
           git commit -m "Update Results [actions]"
+          git pull origin results
           git push origin results
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
