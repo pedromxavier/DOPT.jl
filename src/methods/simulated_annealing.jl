@@ -92,7 +92,7 @@ function solve(
     x̄::Vector{T},
     z̄::T;
     max_iter::Integer = 1000,
-    max_temp::Float64 = 10.0,
+    max_temp::Float64 = 200.0,
     min_temp::Float64 = 1e-3,
     params...,
 ) where {T,S<:AnnealingSchedule}

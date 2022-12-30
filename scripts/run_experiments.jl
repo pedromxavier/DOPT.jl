@@ -1,64 +1,76 @@
 using DOPT
 
-function main()
+function run_tttplots()
     # For TTT-Plots
-    DOPT.run(
-        DOPT.ILS();
-        max_time     = 300.0,
-        max_iter     =  1000,
-        max_subiter  =  1000,
-        relink_depth =     5,
-        num_samples  = 10,
-        sizes=100,
-        codes=Integer[1,2,3],
-    )
+    t = @timed begin
+        let num_samples = 50, sizes = 100, codes = [1, 2, 3]
+            DOPT.run(
+                DOPT.ILS();
+                max_time     = 100.0,
+                max_iter     =   10,
+                max_subiter  = 1000,
+                relink_depth = 5,
+                num_samples  = num_samples,
+                sizes        = sizes,
+                codes        = codes,
+            )
 
-    DOPT.run(
-        DOPT.SimulatedAnnealing();
-        max_iter     =       1000,
-        max_subiter  =       1000,
-        relink_depth =          5,
-        num_samples  = 10,
-        sizes=100,
-        codes=Integer[1,2,3],
-    )
+            DOPT.run(
+                DOPT.SimulatedAnnealing();
+                max_iter     = 1000,
+                max_subiter  = 1000,
+                relink_depth = 5,
+                num_samples  = num_samples,
+                sizes        = sizes,
+                codes        = codes,
+            )
+        end
+    end
 
-    # With Path Relinking
-    DOPT.run(
-        DOPT.ILS();
-        max_time     = 300.0,
-        max_iter     =  1000,
-        max_subiter  =  1000,
-        relink_depth =     5,
-        num_samples  = 3,
-    )
+    println("Time elapsed: $(t.time)")
 
-    DOPT.run(
-        DOPT.SimulatedAnnealing();
-        max_iter     =       1000,
-        max_subiter  =       1000,
-        relink_depth =          5,
-        num_samples  = 3,
-    )
+    return nothing
+end
 
-    # Without Path Relinking
-    DOPT.run(
-        DOPT.ILS();
-        max_time     = 300.0,
-        max_iter     =  1000,
-        max_subiter  =  1000,
-        relink_depth =     0,
-        num_samples  = 3,
-    )
+function main()
+    run_tttplots()
 
-    
-    DOPT.run(
-        DOPT.SimulatedAnnealing();
-        max_iter     =       1000,
-        max_subiter  =       1000,
-        relink_depth =          0,
-        num_samples  = 3,
-    )
+    # # With Path Relinking
+    # DOPT.run(
+    #     DOPT.ILS();
+    #     max_time     = 300.0,
+    #     max_iter     = 1000,
+    #     max_subiter  = 1000,
+    #     relink_depth = 5,
+    #     num_samples  = 3,
+    # )
+
+    # DOPT.run(
+    #     DOPT.SimulatedAnnealing();
+    #     max_iter     = 1000,
+    #     max_subiter  = 1000,
+    #     relink_depth = 5,
+    #     num_samples  = 3,
+    # )
+
+    # # Without Path Relinking
+    # DOPT.run(
+    #     DOPT.ILS();
+    #     max_time     = 300.0,
+    #     max_iter     = 1000,
+    #     max_subiter  = 1000,
+    #     relink_depth = 0,
+    #     num_samples  = 3,
+    # )
+
+
+    # DOPT.run(
+    #     DOPT.SimulatedAnnealing();
+    #     max_iter     = 1000,
+    #     max_subiter  = 1000,
+    #     relink_depth = 0,
+    #     num_samples  = 3,
+    # )
 
     return nothing
 end
