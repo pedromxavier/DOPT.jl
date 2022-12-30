@@ -24,7 +24,7 @@ function run(
 
     _run!(job)
 
-    return nothing
+    return job
 end
 
 function _run!(job::Job, n::Integer, i::Integer)
@@ -92,6 +92,8 @@ function _run!(job::Job)
     end
 
     print_footer()
+
+    println("Results written to $(job_path(job))")
 
     return nothing
 end

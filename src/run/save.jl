@@ -58,9 +58,14 @@ function save!(job::Job)
     path = metadata_path(job)
 
     metadata = Dict{Symbol,Any}(
+        :author      => get_author(),
         :method      => string(job.method),
         :num_samples => job.num_samples,
-        :timestamp   => string(Dates.now());
+        :timestamp   => string(Dates.now()),
+        :cpu_info    => [
+            "$(cpu.model) : $(cpu.speed)MHz"
+            for cpu in Sys.cpu_info()
+        ],
     )
 
     merge!(metadata, job.params)

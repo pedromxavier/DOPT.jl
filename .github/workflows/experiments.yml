@@ -1,0 +1,41 @@
+name: dopt-experiments
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  update:
+    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - julia-version: '1.8'
+            os: ubuntu-latest
+            arch: x64
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: Setup Git
+        run: |
+          git config --global user.name  "GitHub Action"
+          git config --global user.email "action@github.com"
+          git checkout results || git checkout -b results
+          git merge origin/main
+      - name: Update Results
+        run: julia --proj ./scripts/run_experiments.jl
+        env:
+          DOPT_AUTHOR: ${{ github.actor }}
+      - name: Save Results
+        run: |
+          git add -f ./data/results/job-*
+          git commit -m "Update Results [actions]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
