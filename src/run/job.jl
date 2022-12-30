@@ -4,6 +4,8 @@ mutable struct Job
     path::String
     index::Integer
     num_samples::Integer
+    sizes::Vector{Int}
+    codes::Vector{Int}
 
     function Job(
         method,
@@ -11,6 +13,8 @@ mutable struct Job
         path::Union{AbstractString,Nothing} = nothing,
         index::Union{Integer,Nothing} = nothing;
         num_samples::Integer = 1,
+        sizes::Vector = INSTANCE_SIZES,
+        codes::Vector = INSTANCE_CODES,
     )
         if isnothing(path)
             path = results_path()
@@ -20,7 +24,7 @@ mutable struct Job
             index = get_next_job_index(path)
         end
 
-        job = new(method, params, path, index, num_samples)
+        job = new(method, params, path, index, num_samples, sizes, codes)
 
         mkpath(job_path(job))
 

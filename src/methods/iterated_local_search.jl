@@ -59,7 +59,6 @@ function print_header(
     method::IteratedLocalSearch;
     max_iter,
     max_time,
-    max_temp,
     nthreads,
     params...,
 )
@@ -67,7 +66,6 @@ function print_header(
           * $(method)
           * max_iter = $(max_iter)
           * max_time = $(max_time)
-          * max_temp = $(max_temp)
           * nthreads = $(nthreads)
           """)
 
