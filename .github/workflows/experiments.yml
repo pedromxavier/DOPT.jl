@@ -26,7 +26,7 @@ jobs:
           git config --global user.name  "GitHub Action"
           git config --global user.email "action@github.com"
           git checkout results || git checkout -b results
-          git merge origin main
+          git merge origin/main
       - name: Update Results
         run: julia --proj ./scripts/run_experiments.jl
         env:
