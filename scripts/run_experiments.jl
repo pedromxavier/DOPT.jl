@@ -1,63 +1,35 @@
 using DOPT
 
-function run_minimal()
-    println("Running Minimal Example")
-
+function run()
     # For TTT-Plots
     t = @timed begin
-        let num_samples = 3, sizes = 40, codes = 1
-            DOPT.run(
+        let num_samples = 30, codes = 3, sizes = 80
+
+            job = DOPT.run(
                 DOPT.ILS();
-                max_time     = 100.0,
-                max_iter     = 10,
-                max_subiter  = 1000,
-                relink_depth = 0,
-                num_samples  = num_samples,
-                sizes        = sizes,
-                codes        = codes,
-            )
-
-            DOPT.run(
-                DOPT.SimulatedAnnealing();
-                max_iter     = 100,
-                max_subiter  = 100,
-                relink_depth = 0,
-                num_samples  = num_samples,
-                sizes        = sizes,
-                codes        = codes,
-            )
-        end
-    end
-
-    println("Time elapsed: $(t.time)")
-
-    return nothing
-end
-
-function run_tttplots()
-    # For TTT-Plots
-    t = @timed begin
-        let num_samples = 30, sizes = 80, codes = [1, 2, 3]
-            DOPT.run(
-                DOPT.ILS();
-                max_time     = 100.0,
-                max_iter     = 10,
-                max_subiter  = 1000,
-                relink_depth = 5,
-                num_samples  = num_samples,
-                sizes        = sizes,
-                codes        = codes,
-            )
-
-            DOPT.run(
-                DOPT.SimulatedAnnealing();
+                nthreads     = 1,
                 max_iter     = 1000,
                 max_subiter  = 1000,
-                relink_depth = 5,
+                relink_depth = 10,
                 num_samples  = num_samples,
                 sizes        = sizes,
                 codes        = codes,
             )
+
+            DOPT.extract_ttt(job)
+
+            job = DOPT.run(
+                DOPT.ILS();
+                nthreads     = Threads.nthreads(),
+                max_iter     = 1000,
+                max_subiter  = 1000,
+                relink_depth = 10,
+                num_samples  = num_samples,
+                sizes        = sizes,
+                codes        = codes,
+            )
+
+            DOPT.extract_ttt(job)
         end
     end
 
@@ -66,4 +38,6 @@ function run_tttplots()
     return nothing
 end
 
-run_minimal()
+# ∫(-x)ⁿ e⁻ᵃˣ dx = ∫(-x)ⁿ ∑ₖ₌₀ (-a x)ᵏ / k! dx
+
+run()

@@ -51,9 +51,9 @@ end
 
 """
 """
-struct ReverseSchedule{S<:AnnealingSchedule} end
+struct ReverseSchedule{S<:AnnealingSchedule} <: AnnealingSchedule end
 
-Base.show(io::IO, ::Type{ReverseSchedule{S}}) where {S} = print(io, "Reverse($S)")
+Base.show(io::IO, ::Type{ReverseSchedule{S}}) where {S} = print(io, "Reverse $S")
 
 ReverseSchedule() = ReverseSchedule{GeometricSchedule}()
 

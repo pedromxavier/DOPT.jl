@@ -26,33 +26,39 @@ function solve(
     params...,
 ) where {T,U,LS<:LocalSearch}
     V = build_buffer(A)
-    r = Report{T,U}(max_iter)
+    R = [Report{T,U}(max_iter) for _ = 1:nthreads]
 
-    x̂, ẑ = x⃰, z⃰ = add_solution!(r, x̄, z̄)
+    Threads.@threads for i = 1:nthreads
+        r = R[i]
 
-    while !stop(r.num_iter, max_iter, time(r), max_time)
-        x = shake(x̂, num_swaps)
-        z = objval(A, x)
+        x̂, ẑ = x⃰, z⃰ = add_solution!(r, x̄, z̄)
 
-        x, z, ns = solve(LS(), A, V, x, z; max_iter = max_subiter, max_time = max_subtime)
+        while !stop(r.num_iter, max_iter, time(r), max_time)
+            x = shake(x̂, num_swaps)
+            z = objval(A, x)
 
-        Δ = z - ẑ
+            x, z, ns = solve(LS(), A, V, x, z; max_iter = max_subiter, max_time = max_subtime)
 
-        if Δ >= zero(T)
-            x̂, ẑ = x, z # Accept
+            Δ = z - ẑ
 
-            if ẑ > z⃰
-                x⃰, z⃰ = add_solution!(r, x̂, ẑ)
+            if Δ >= zero(T)
+                x̂, ẑ = x, z # Accept
+
+                if ẑ > z⃰
+                    x⃰, z⃰ = add_solution!(r, x̂, ẑ)
+                end
+            elseif rand() < exp(Δ / max_temp)
+                x̂, ẑ = x, z # Accept
             end
-        elseif rand() < exp(Δ / max_temp)
-            x̂, ẑ = x, z # Accept
-        end
 
-        r.num_iter    += 1
-        r.num_subiter += ns
+            r.num_iter    += 1
+            r.num_subiter += ns
+        end
     end
 
-    return r
+    i = argmax(r.z[end] for r in R)
+
+    return R[i]
 end
 
 function print_header(

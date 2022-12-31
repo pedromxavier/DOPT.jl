@@ -63,3 +63,17 @@ function create_job(path::AbstractString)
 
     data
 end
+
+function extract_ttt(job::Job)
+    path = series_path(job)
+
+    for n = job.sizes, i = job.codes
+        z = read_benchmark(n, i)
+
+        src_path = joinpath(path, "$(n)_$(i).*.csv")
+        out_path = joinpath(path, "$(n)_$(i).dat")
+        Base.run(`tttplots-extract $z -o $out_path $src_path`)
+    end
+
+    return nothing
+end
