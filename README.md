@@ -6,6 +6,24 @@ julia> using Pkg
 
 julia> Pkg.add(url=raw"https://github.com/pedromxavier/DOPT.jl")
 ```
+# Running an experiment
+```julia
+DOPT.run(
+    DOPT.SimulatedAnnealing();
+    # Select instances:
+    sizes = [40, 80, 100],
+    codes = [1, 2, 3],
+    # How many times each instance is runned:
+    num_samples = 10,
+    # Number of annealing steps and metropolis steps:
+    num_iter    = 1_000,
+    num_subiter = 1_000,
+    # Temperature settings:
+    max_temp = 200.0,
+    min_temp = 1E-10,
+)
+```
+
 
 # Updating Best Solutions
 1. [Fork](https://github.com/pedromxavier/DOPT.jl/fork) this repository.
